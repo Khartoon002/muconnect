@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-border: #e2e8f0;
+  --muted: #64748b;
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-border: #334155;
+  --muted: #94a3b8;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* ── Liquid Glass ── */
+.glass {
+  background: rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.45),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.13),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+.glass-input:hover:not(:focus) {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* ── Keyframes ── */
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.1); }
+  66%       { transform: translate(-20px, 20px) scale(0.92); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-14px); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ── Animation classes ── */
+.animate-blob          { animation: blob 9s ease-in-out infinite; }
+.animate-blob-d2       { animation: blob 9s ease-in-out 2.5s infinite; }
+.animate-blob-d4       { animation: blob 9s ease-in-out 5s infinite; }
+.animate-float         { animation: float 4.5s ease-in-out infinite; }
+.animate-fade-up       { animation: fade-up 0.55s ease-out both; }
+.animate-fade-up-d1    { animation: fade-up 0.55s ease-out 0.1s both; }
+.animate-fade-up-d2    { animation: fade-up 0.55s ease-out 0.2s both; }
+.animate-fade-up-d3    { animation: fade-up 0.55s ease-out 0.3s both; }
+.animate-fade-in       { animation: fade-in 0.4s ease-out both; }
+.animate-spin-slow     { animation: spin-slow 12s linear infinite; }
+
+/* ── Scrollbar ── */
+.scrollbar-none                    { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* ── Print ── */
+@media print {
+  .print\:hidden { display: none !important; }
+}

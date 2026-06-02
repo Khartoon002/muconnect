@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  LECTURER
+  ADMIN
+}
+
+enum NotificationType {
+  REGISTRATION
+  FEE
+  RESULT
+  ANNOUNCEMENT
+  SYSTEM
+}
+
+model User {
+  id             String    @id @default(cuid())
+  matricNumber   String?   @unique
+  staffId        String?   @unique
+  email          String    @unique
+  name           String
+  password       String
+  role           Role      @default(STUDENT)
+  department     String?
+  faculty        String?
+  level          Int?
+  phone          String?
+  profileImage   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  sessions       Session[]
+  notifications  Notification[]
+  courses        CourseEnrollment[]
+  results        Result[]
+  feePayments    FeePayment[]
+  feedbacks      Feedback[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  title       String
+  units       Int
+  department  String
+  level       Int
+  semester    Int
+  session     String
+  lecturerId  String?
+  createdAt   DateTime @default(now())
+
+  enrollments CourseEnrollment[]
+  results     Result[]
+}
+
+model CourseEnrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  session   String
+  semester  Int
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId, session, semester])
+}
+
+model Result {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  score     Float
+  grade     String
+  session   String
+  semester  Int
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId, session, semester])
+}
+
+model FeePayment {
+  id            String    @id @default(cuid())
+  userId        String
+  amount        Float
+  feeType       String
+  session       String
+  status        String    @default("PENDING")
+  reference     String?   @unique
+  paidAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  body        String
+  targetRole  Role?
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  category  String
+  message   String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
